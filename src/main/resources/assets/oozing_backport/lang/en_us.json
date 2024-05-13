@@ -1,0 +1,7 @@
+{
+  "effect.oozing_backport.oozing" : "Oozing",
+  "item.minecraft.potion.effect.oozing": "Potion of Oozing",
+  "item.minecraft.splash_potion.effect.oozing": "Splash Potion of Oozing",
+  "item.minecraft.lingering_potion.effect.oozing": "Lingering Potion of Oozing",
+  "item.minecraft.tipped_arrow.effect.oozing": "Arrow of Oozing"
+}
