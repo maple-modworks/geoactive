@@ -1,6 +1,7 @@
 package com.herrkatze.geoactive.lists;
 
 import com.herrkatze.geoactive.BlockEntities.GeyserBlockEntity;
+import com.herrkatze.geoactive.BlockEntities.GeyserGeneratorBlockEntity;
 import com.herrkatze.geoactive.BlockEntities.GeyserPeripheralBlockEntity;
 import com.herrkatze.geoactive.GeoActive;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -19,7 +20,11 @@ public class BlockEntityList {
     public static final RegistryObject<BlockEntityType<GeyserPeripheralBlockEntity>> GEYSER_PERIPHERAL_BE =
             BLOCK_ENTITIES.register("geyser_peripheral_be",() ->
                     BlockEntityType.Builder.of(GeyserPeripheralBlockEntity::new,
-                            BlockList.GEYSER_PERIPHERAL_BLOCK.get()).build(null));
+                            BlockList.GEYSER_PERIPHERAL_BLOCK.get(),BlockList.GEYSER_FLUID_BLOCKER.get()).build(null));
+    public static final RegistryObject<BlockEntityType<GeyserGeneratorBlockEntity>> GEYSER_GENERATOR_BE =
+            BLOCK_ENTITIES.register("geyser_generator_be",() ->
+                    BlockEntityType.Builder.of(GeyserGeneratorBlockEntity::new,
+                            BlockList.GEYSER_GENERATOR_BLOCK.get()).build(null));
 
     public static void Register(IEventBus bus) {
         BLOCK_ENTITIES.register(bus);

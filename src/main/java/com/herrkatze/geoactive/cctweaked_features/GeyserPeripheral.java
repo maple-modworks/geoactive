@@ -2,6 +2,7 @@ package com.herrkatze.geoactive.cctweaked_features;
 
 import com.herrkatze.geoactive.BlockEntities.GeyserBlockEntity;
 import com.herrkatze.geoactive.BlockEntities.GeyserPeripheralBlockEntity;
+import com.herrkatze.geoactive.GeoActive;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
@@ -32,6 +33,7 @@ public class GeyserPeripheral implements IPeripheral {
 
     @Override
     public void detach(IComputerAccess computer) {
+        GeoActive.LOGGER.debug("Detached. oops.");
         IPeripheral.super.detach(computer);
     }
 
@@ -46,7 +48,7 @@ public class GeyserPeripheral implements IPeripheral {
         return this == iPeripheral;
     }
 
-    @LuaFunction
+    @LuaFunction(mainThread = true)
     public final int getTankAmount() {
         GeyserBlockEntity geyser = this.gpbe.getGeyser();
         if (geyser != null) {
@@ -54,7 +56,7 @@ public class GeyserPeripheral implements IPeripheral {
         }
         return -1;
     }
-    @LuaFunction
+    @LuaFunction(mainThread = true)
     public final int getDelay() {
         GeyserBlockEntity geyser = this.gpbe.getGeyser();
         if (geyser != null) {
@@ -62,7 +64,7 @@ public class GeyserPeripheral implements IPeripheral {
         }
         return -1;
     }
-    @LuaFunction
+    @LuaFunction(mainThread = true)
     public final String getGeneratedFluid() {
         GeyserBlockEntity geyser = this.gpbe.getGeyser();
         if (geyser != null) {
@@ -70,7 +72,7 @@ public class GeyserPeripheral implements IPeripheral {
         }
         return null;
     }
-    @LuaFunction
+    @LuaFunction(mainThread = true)
     public final int getGeneratedAmount() {
         GeyserBlockEntity geyser = this.gpbe.getGeyser();
         if (geyser != null) {

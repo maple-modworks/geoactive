@@ -28,9 +28,13 @@ public class GeyserBlockEntity extends BlockEntity {
         return this.tank;
     });
 
-    private Fluid storedFluid;
+    private Fluid generatedFluid;
     private int delay ;
     private int amount ;
+    private boolean isIdle;
+    private int activeLength;
+    private int idleLength;
+    private boolean ignoreIdle;
 
     public GeyserBlockEntity(@NotNull BlockEntityType<?> blockEntityType, BlockPos pos, BlockState state) {
         super(blockEntityType, pos, state);
@@ -41,18 +45,26 @@ public class GeyserBlockEntity extends BlockEntity {
     public void load(CompoundTag tag) {
         super.load(tag);
         this.tank.readFromNBT(tag);
-        ResourceLocation fluidName = new ResourceLocation(tag.getString("storedFluid"));
-        this.storedFluid = (Fluid) ForgeRegistries.FLUIDS.getValue(fluidName);
+        ResourceLocation fluidName = new ResourceLocation(tag.getString("generatedFluid"));
+        this.generatedFluid = (Fluid) ForgeRegistries.FLUIDS.getValue(fluidName);
         this.delay = tag.getInt("delay");
         this.amount = tag.getInt("amount");
+        this.idleLength = tag.getInt("idleLength");
+        this.activeLength = tag.getInt("activeLength");
+        this.isIdle = tag.getBoolean("isIdle");
+        this.ignoreIdle = tag.getBoolean("ignoreIdle");
     }
 
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
         this.tank.writeToNBT(tag);
-        tag.putString("storedFluid", ForgeRegistries.FLUIDS.getKey(this.storedFluid).toString());
+        tag.putString("generatedFluid", ForgeRegistries.FLUIDS.getKey(this.generatedFluid).toString());
         tag.putInt("delay",delay);
         tag.putInt("amount",amount);
+        tag.putInt("idleLength",idleLength);
+        tag.putInt("activeLength",activeLength);
+        tag.putBoolean("isIdle",isIdle);
+        tag.putBoolean("ignoreIdle",ignoreIdle);
     }
 
     public int getTankAmount() {
@@ -62,40 +74,50 @@ public class GeyserBlockEntity extends BlockEntity {
         return this.delay;
     }
     public String getGeneratedFluid() {
-        return ForgeRegistries.FLUIDS.getKey(this.storedFluid).toString();
+        return ForgeRegistries.FLUIDS.getKey(this.generatedFluid).toString();
     }
     public int getGeneratedAmount() {
         return amount;
     }
 
     private int ticks;
+    private int idleTimer;
     public void tick(Level level, BlockPos pos, BlockState state){
         if (this.delay == 0) {this.delay = 10;}
         if (this.amount == 0) {this.amount = 5;}
-        if (this.ticks++ % this.delay == 0) {
-            this.ticks = 1;
-            FluidStack fluid;
-            if (this.storedFluid == null) {
-                this.storedFluid = Fluids.LAVA;
-
-            }
-            if (this.tank.getFluid().getFluid() != this.storedFluid) {
-                this.tank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
-            }
-            fluid = new FluidStack(this.storedFluid,this.amount);
-
-
-            this.tank.fill(fluid, IFluidHandler.FluidAction.EXECUTE);
-            if (this.tank.getFluidAmount() == 1000) {
-                BlockState state1 = level.getBlockState(pos.above());
-
-                if (state1.getBlock() == Blocks.AIR) {
-                    level.setBlock(pos.above(),fluid.getFluid().defaultFluidState().createLegacyBlock(),3);
-                    this.tank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
+        if (this.idleLength == 0) {this.idleLength =(5*60*20);} // Default 5 minutes idle, 15 minutes active
+        if (this.activeLength == 0) {this.activeLength =(15*60*20);}
+        if(!ignoreIdle) {idleTimer++;}
+        if (!isIdle || ignoreIdle){
+            if (idleTimer >= activeLength) {isIdle = true;idleTimer = 0;}
+            if (this.ticks++ % this.delay == 0) {
+                this.ticks = 1;
+                FluidStack fluid;
+                if (this.generatedFluid == null) {
+                    this.generatedFluid = Fluids.LAVA;
 
                 }
+                if (this.tank.getFluid().getFluid() != this.generatedFluid) {
+                    this.tank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
+                }
+                fluid = new FluidStack(this.generatedFluid,this.amount);
 
+
+                this.tank.fill(fluid, IFluidHandler.FluidAction.EXECUTE);
+                if (this.tank.getFluidAmount() == 1000) {
+                    BlockState state1 = level.getBlockState(pos.above());
+
+                    if (state1.getBlock() == Blocks.AIR) {
+                        level.setBlock(pos.above(),fluid.getFluid().defaultFluidState().createLegacyBlock(),3);
+                        this.tank.drain(1000, IFluidHandler.FluidAction.EXECUTE);
+
+                    }
+
+                }
             }
+        }
+        else{
+            if (idleTimer >= idleLength) {isIdle = false; idleTimer = 0;}
         }
     }
     public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction facing) {

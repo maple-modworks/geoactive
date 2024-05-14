@@ -1,8 +1,6 @@
 package com.herrkatze.geoactive.lists;
 
-import com.herrkatze.geoactive.GeoActive;
-import com.herrkatze.geoactive.GeyserBlock;
-import com.herrkatze.geoactive.GeyserPeripheralBlock;
+import com.herrkatze.geoactive.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -19,6 +17,10 @@ public class BlockList {
     public static final RegistryObject<Block> GEYSER_BLOCK = BLOCKS.register("geyser_block",() -> new GeyserBlock(BlockBehaviour.Properties.copy(Blocks.BEDROCK)));
 
     public static final RegistryObject<Block> GEYSER_PERIPHERAL_BLOCK = BLOCKS.register("geyser_peripheral",() -> new GeyserPeripheralBlock(BlockBehaviour.Properties.copy(Blocks.BEDROCK)));
+
+    public static final RegistryObject<Block> GEYSER_GENERATOR_BLOCK = BLOCKS.register("geyser_generator", () -> new GeyserGeneratorBlock(BlockBehaviour.Properties.copy(Blocks.BEDROCK)));
+
+    public static final RegistryObject<Block> GEYSER_FLUID_BLOCKER = BLOCKS.register("geyser_fluid_blocker",() -> new GeyserFluidBlocker(BlockBehaviour.Properties.copy(Blocks.BEDROCK)));
 
     public static void register(IEventBus bus) {
         BLOCKS.register(bus);

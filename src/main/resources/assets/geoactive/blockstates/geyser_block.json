@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "geoactive:block/geyser_block"
+    }
+  }
+}

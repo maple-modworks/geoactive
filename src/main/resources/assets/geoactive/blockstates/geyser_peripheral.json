@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "visible=true,facing=south,small=false": {"model": "geoactive:block/geyser_part_1"},
+    "visible=true,facing=west,small=false": {"model": "geoactive:block/geyser_part_1","y": 90},
+    "visible=true,facing=north,small=false": {"model": "geoactive:block/geyser_part_1","y": 180},
+    "visible=true,facing=east,small=false": {"model": "geoactive:block/geyser_part_1","y": 270}
+  }
+}

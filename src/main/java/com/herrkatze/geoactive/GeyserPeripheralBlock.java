@@ -1,39 +1,48 @@
 package com.herrkatze.geoactive;
 
-import com.herrkatze.geoactive.BlockEntities.GeyserBlockEntity;
-import com.herrkatze.geoactive.BlockEntities.GeyserPeripheralBlockEntity;
-import com.herrkatze.geoactive.lists.BlockEntityList;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class GeyserPeripheralBlock extends BaseEntityBlock {
+public class GeyserPeripheralBlock extends BaseGeyserPeripheral{
+    public static final DirectionProperty facing = BlockStateProperties.HORIZONTAL_FACING;
+    public static final BooleanProperty visible = BooleanProperty.create("visible");
+    public static final BooleanProperty small = BooleanProperty.create("small");
+    static VoxelShape FULL_BLOCK = Block.box(0,0,0,16,16,16);
+    static VoxelShape SLAB_BLOCK = Block.box(0,0,0,16,10,16);
 
     public GeyserPeripheralBlock(Properties pProperties) {
         super(pProperties);
+        this.registerDefaultState(this.getStateDefinition().any().setValue(facing, Direction.SOUTH).setValue(visible,false).setValue(small,false));
+
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
+        pBuilder.add(new Property[]{facing,visible,small});
+    }
+    @Override
+    public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
+        if(pState.getValue(small)) {
+            return SLAB_BLOCK;
+        }
+        else return FULL_BLOCK;
     }
     @Override
     public RenderShape getRenderShape(BlockState pState) {
-        return RenderShape.MODEL;
-    }
-    @Nullable
-    @Override
-    public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new GeyserPeripheralBlockEntity(blockPos,blockState);
-    }
-
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        if (pLevel.isClientSide()) {
-            return null;
+        if(pState.getValue(visible)) {
+            return RenderShape.MODEL;
         }
-        return  createTickerHelper(pBlockEntityType,BlockEntityList.GEYSER_PERIPHERAL_BE.get(),
-                (level, blockPos, blockState, entity) -> entity.tick(level,blockPos,blockState));
+        return RenderShape.INVISIBLE;
     }
-
 }

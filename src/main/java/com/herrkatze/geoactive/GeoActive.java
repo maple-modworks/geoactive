@@ -31,6 +31,7 @@ public class GeoActive
 
     public GeoActive()
     {
+        gamerules.initializeGamerules();
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         // Register the commonSetup method for modloading
