@@ -1,7 +1,14 @@
 {
-  "effect.oozing_backport.oozing" : "Oozing",
-  "item.minecraft.potion.effect.oozing": "Potion of Oozing",
-  "item.minecraft.splash_potion.effect.oozing": "Splash Potion of Oozing",
-  "item.minecraft.lingering_potion.effect.oozing": "Lingering Potion of Oozing",
-  "item.minecraft.tipped_arrow.effect.oozing": "Arrow of Oozing"
+  "geoactive.fluid_type": "Set Fluid Type",
+  "geoactive.geyser_creator_title": "Geyser Creator",
+  "geoactive.set_delay": "Set Generation Delay",
+  "geoactive.set_amount": "Set Generated Amount",
+  "geoactive.set_idle_length": "Set Idle Length",
+  "geoactive.set_active_length": "Set Active Length",
+  "geoactive.fluidInput": "Fluid",
+  "geoactive.amountInput": "Amount",
+  "geoactive.delayInput": "Delay",
+  "geoactive.idleInput": "Idle Ticks",
+  "geoactive.activeInput": "Active Ticks",
+  "item.geoactive.geyser_creator": "Geyser Creator"
 }

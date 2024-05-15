@@ -79,6 +79,9 @@ public class GeyserBlockEntity extends BlockEntity {
     public int getGeneratedAmount() {
         return amount;
     }
+    public int getIdleLength(){return idleLength;}
+    public int getActiveLength(){return activeLength;}
+    public boolean isIdle() {return isIdle;}
 
     private int ticks;
     private int idleTimer;

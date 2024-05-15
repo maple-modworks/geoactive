@@ -13,33 +13,44 @@ public class GeyserCreatorPacket {
 
 
 
-    public GeyserCreatorPacket(String reason, long time){
-        this.reason = reason;
-        this.time = time;
+    public GeyserCreatorPacket(String fluid,int amountValue,int delayValue,int idleValue,int activeValue){
+        this.fluid = fluid;
+        this.amountValue = amountValue;
+        this.delayValue = delayValue;
+        this.idleValue = idleValue;
+        this.activeValue = activeValue;
     }
-    protected long time;
-    protected String reason;
-    public static void toBytes(final BanReasonPacket msg, final FriendlyByteBuf buf){
-        buf.writeUtf(msg.reason);
-        buf.writeLong(msg.time);
+    protected String fluid;
+    protected int amountValue,delayValue,idleValue,activeValue;
+    public static void toBytes(final GeyserCreatorPacket msg, final FriendlyByteBuf buf){
+        buf.writeUtf(msg.fluid);
+        buf.writeInt(msg.amountValue);
+        buf.writeInt(msg.delayValue);
+        buf.writeInt(msg.idleValue);
+        buf.writeInt(msg.activeValue);
     }
-    public static BanReasonPacket fromBytes(final FriendlyByteBuf buf){
-        final String reason = buf.readUtf();
-        final long time = buf.readLong();
-        return new BanReasonPacket(reason,time);
+    public static GeyserCreatorPacket fromBytes(final FriendlyByteBuf buf){
+        final String fluid = buf.readUtf();
+        final int amountValue = buf.readInt();
+        final int delayValue = buf.readInt();
+        final int idleValue = buf.readInt();
+        final int activeValue = buf.readInt();
+        return new GeyserCreatorPacket(fluid,amountValue,delayValue,idleValue,activeValue);
     }
-    public static void handlePacket(final BanReasonPacket message, final Supplier<NetworkEvent.Context> contextSupplier) {
+    public static void handlePacket(final GeyserCreatorPacket message, final Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
         if (context.getDirection().getReceptionSide() == LogicalSide.SERVER) {
             context.enqueueWork(() -> {
-                // locate the server-side entity and play the sound at its location
                 ServerPlayer player = context.getSender();
                 ItemStack stack = player.getInventory().getSelected();
-                if (stack.getItem() instanceof BanHammerItem){
-                    CompoundTag Tag =stack.getOrCreateTag();
-                    Tag.putString("reason",message.reason);
-                    Tag.putLong("time",message.time);
-                    stack.setTag(Tag);
+                if (stack.getItem() instanceof GeyserCreatorItem) {
+                    CompoundTag tag = stack.getOrCreateTag();
+                    tag.putString("generatedFluid", message.fluid);
+                    tag.putInt("delay",message.delayValue);
+                    tag.putInt("amount",message.amountValue);
+                    tag.putInt("idleLength",message.idleValue);
+                    tag.putInt("activeLength",message.activeValue);
+                    tag.putBoolean("hasPlacedGeyser",false);
                 }
 
             });

@@ -80,5 +80,28 @@ public class GeyserPeripheral implements IPeripheral {
         }
         return -1;
     }
-
+    @LuaFunction(mainThread = true)
+    public final int getIdleLength() {
+        GeyserBlockEntity geyser = this.gpbe.getGeyser();
+        if (geyser != null) {
+            return geyser.getIdleLength();
+        }
+        return -1;
+    }
+    @LuaFunction(mainThread = true)
+    public final int getActiveLength() {
+        GeyserBlockEntity geyser = this.gpbe.getGeyser();
+        if (geyser != null) {
+            return geyser.getActiveLength();
+        }
+        return -1;
+    }
+    @LuaFunction(mainThread = true)
+    public final boolean isIdle() {
+        GeyserBlockEntity geyser = this.gpbe.getGeyser();
+        if (geyser != null) {
+            return geyser.isIdle();
+        }
+        return false;
+    }
 }

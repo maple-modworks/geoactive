@@ -2,6 +2,7 @@ package com.herrkatze.geoactive;
 
 import com.herrkatze.geoactive.lists.BlockEntityList;
 import com.herrkatze.geoactive.lists.BlockList;
+import com.herrkatze.geoactive.lists.ItemList;
 import com.mojang.logging.LogUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -16,7 +17,10 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.network.NetworkDirection;
 import org.slf4j.Logger;
+
+import java.util.Optional;
 
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -40,11 +44,13 @@ public class GeoActive
         // Register the Deferred Register to the mod event bus so blocks get registered\
         BlockList.register(modEventBus);
         BlockEntityList.Register(modEventBus);
+        ItemList.register(modEventBus);
         // Register the Deferred Register to the mod event bus so items get registered
         // Register ourselves for server and other game events we are interested in
 
         MinecraftForge.EVENT_BUS.register(this);
         int id = 0;
+        GeoActivePacketHandler.CHANNEL.registerMessage(id++,GeyserCreatorPacket.class,GeyserCreatorPacket::toBytes,GeyserCreatorPacket::fromBytes,GeyserCreatorPacket::handlePacket, Optional.of(NetworkDirection.PLAY_TO_SERVER));
     }
     private void commonSetup(final FMLCommonSetupEvent event)
     {
